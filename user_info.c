@@ -30,5 +30,12 @@ int main()
 	printf("\tLogin shell: %s\n", pwd->pw_shell);
 	printf("\tGroup id: %d\n", pwd->pw_gid);
 
+	printf("Get all users:\n");
+
+	while ((pwd = getpwent()) != NULL)
+		printf("\t%s: %ld\n", pwd->pw_name, (long)pwd->pw_uid);
+
+	endpwent();
+
 	return EXIT_SUCCESS;
 }
