@@ -1,5 +1,6 @@
 #include <pwd.h>
 #include <grp.h>
+#include <shadow.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -70,6 +71,18 @@ int main()
 		printf("\t%s\n", grp->gr_name);
 
 	endgrent();
+
+	struct spwd *s;
+	s = getspnam("marcos");
+
+	if (s) {
+		printf("Shadow data:\n");
+		printf("\tUsername: %s\n", s->sp_namp);
+		printf("\tEncrypted passwd: %s\n", s->sp_pwdp);
+		printf("\tLast passwd changed: %ld\n", s->sp_lstchg);
+	} else {
+		perror("getspnam");
+	}
 
 	return EXIT_SUCCESS;
 }
