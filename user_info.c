@@ -1,6 +1,9 @@
 #include <pwd.h>
+#include <grp.h>
+
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 int main()
 {
@@ -36,6 +39,37 @@ int main()
 		printf("\t%s: %ld\n", pwd->pw_name, (long)pwd->pw_uid);
 
 	endpwent();
+
+	struct group *grp;
+
+	grp = getgrnam("wheel");
+	if (!grp) {
+		printf("Group not found! Aborting\n");
+		return EXIT_FAILURE;
+	}
+
+	printf("Group wheel(using getgrnam):\n");
+	printf("\tGroup name: %s\n", grp->gr_name);
+	printf("\tGroup password: %s\n", grp->gr_passwd);
+	printf("\tGroup GID: %d\n", grp->gr_gid);
+
+	char **nam;
+	for (nam = grp->gr_mem; *nam; nam++)
+		printf("\tGroup member: %s\n", *nam);
+
+	grp = getgrgid(grp->gr_gid);
+	if (!grp) {
+		printf("Group not foundby gid! Aborting\n");
+		return EXIT_FAILURE;
+	}
+
+	printf("Group encontered by id %d\n", grp->gr_gid);
+
+	printf("All groups:\n");
+	while ((grp = getgrent()) != NULL)
+		printf("\t%s\n", grp->gr_name);
+
+	endgrent();
 
 	return EXIT_SUCCESS;
 }
