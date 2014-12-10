@@ -6,7 +6,7 @@ all:
 	gcc append_seek_0.c -Wall -Werror -o append_seek_0
 	gcc modify_env.c -Wall -Werror -o modify_env
 	gcc show_argv.c -Wall -Werror -o show_argv
-	gcc user_info.c -Wall -Werror -o user_info
+	gcc user_info.c -Wall -Werror -o user_info -lcrypt -g
 clean:
 	rm cp tee show_argv
 	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info

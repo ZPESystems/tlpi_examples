@@ -1,14 +1,52 @@
+#define _BSD_SOURCE  //getpass() from unistd.h
+#define _XOPEN_SOURCE // crypto from unistd.h
+
 #include <pwd.h>
 #include <grp.h>
 #include <shadow.h>
 
+#include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+
+void validate_user(struct passwd *pwd, struct spwd *s)
+{
+	char *passwd, *encrypted;
+
+	passwd = getpass("Password: ");
+
+	// use shadow passwd if exists
+	if (s) {
+		printf("Shadow passwd: %s\n", s->sp_pwdp);
+		pwd->pw_passwd = s->sp_pwdp;
+	}
+
+	encrypted = crypt(passwd, pwd->pw_passwd);
+	// erase cleartext password
+	//bzero(&passwd, sizeof(passwd));
+
+	if (!encrypted) {
+		perror("crypt");
+		return;
+	}
+
+	if (strcmp(encrypted, pwd->pw_passwd)) {
+		printf("Wrong password...\n");
+		return;
+	}
+
+	printf("user passwd: %s\n", passwd);
+	printf("enc passwd: %s\n", encrypted);
+	printf("enc passwd stored: %s\n", pwd->pw_passwd);
+
+	printf("User %s authenticated! UID=%d\n", pwd->pw_name, pwd->pw_uid);
+}
 
 int main()
 {
-	struct passwd *pwd;
+	struct passwd *pwd, *pw;
 	pwd = getpwnam("marcos");
 
 	if (!pwd) {
@@ -20,6 +58,7 @@ int main()
 	printf("\tHome dir: %s\n", pwd->pw_dir);
 	printf("\tLogin shell: %s\n", pwd->pw_shell);
 	printf("\tGroup id: %d\n", pwd->pw_gid);
+	printf("\tPassword: %s\n", pwd->pw_passwd);
 
 	uid_t uid = pwd->pw_uid;
 
@@ -36,8 +75,8 @@ int main()
 
 	printf("Get all users:\n");
 
-	while ((pwd = getpwent()) != NULL)
-		printf("\t%s: %ld\n", pwd->pw_name, (long)pwd->pw_uid);
+	while ((pw = getpwent()) != NULL)
+		printf("\t%s: %ld\n", pw->pw_name, (long)pw->pw_uid);
 
 	endpwent();
 
@@ -80,6 +119,8 @@ int main()
 		printf("\tUsername: %s\n", s->sp_namp);
 		printf("\tEncrypted passwd: %s\n", s->sp_pwdp);
 		printf("\tLast passwd changed: %ld\n", s->sp_lstchg);
+
+		validate_user(pwd, s);
 	} else {
 		perror("getspnam");
 	}
