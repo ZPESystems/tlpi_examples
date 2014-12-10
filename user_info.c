@@ -25,7 +25,7 @@ void validate_user(struct passwd *pwd, struct spwd *s)
 
 	encrypted = crypt(passwd, pwd->pw_passwd);
 	// erase cleartext password
-	//bzero(&passwd, sizeof(passwd));
+	bzero(&passwd, sizeof(passwd));
 
 	if (!encrypted) {
 		perror("crypt");
@@ -37,7 +37,6 @@ void validate_user(struct passwd *pwd, struct spwd *s)
 		return;
 	}
 
-	printf("user passwd: %s\n", passwd);
 	printf("enc passwd: %s\n", encrypted);
 	printf("enc passwd stored: %s\n", pwd->pw_passwd);
 
