@@ -1,4 +1,4 @@
-#define _BSD_SOURCE  //getpass() from unistd.h
+#define _DEFAULT_SOURCE  //getpass() from unistd.h
 #define _XOPEN_SOURCE // crypto from unistd.h
 
 #include <pwd.h>
