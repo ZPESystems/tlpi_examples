@@ -7,5 +7,6 @@ all:
 	gcc modify_env.c -Wall -Werror -o modify_env
 	gcc show_argv.c -Wall -Werror -o show_argv
 	gcc user_info.c -Wall -Werror -o user_info -lcrypt -g
+	gcc time.c -Wall -Werror -o time
 clean:
-	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info
+	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info time
