@@ -8,5 +8,6 @@ all:
 	gcc show_argv.c -Wall -Werror -o show_argv
 	gcc user_info.c -Wall -Werror -o user_info -lcrypt -g
 	gcc time.c -Wall -Werror -o time
+	gcc sys_limits.c -Wall -Werror -o sys_limits
 clean:
-	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info time
+	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info time sys_limits
