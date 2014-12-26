@@ -10,5 +10,6 @@ all:
 	gcc time.c -Wall -Werror -o time
 	gcc sys_limits.c -Wall -Werror -o sys_limits
 	gcc proc_info.c -Wall -Werror -o proc_info
+	gcc get_processes.c -Wall -Werror -o get_processes
 clean:
-	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info time sys_limits proc_info
+	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info time sys_limits proc_info get_processes
