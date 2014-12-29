@@ -14,5 +14,6 @@ all:
 	gcc file_monitor.c -Wall -Werror -o file_monitor
 	gcc pipe.c -Wall -Werror -o pipe
 	gcc pipe_filter.c -Wall -Werror -o pipe_filter
+	gcc popen.c -Wall -Werror -o popen
 clean:
-	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info time sys_limits proc_info get_processes file_monitor pipe pipe_filter
+	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info time sys_limits proc_info get_processes file_monitor pipe pipe_filter popen
