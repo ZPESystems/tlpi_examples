@@ -17,6 +17,6 @@ all:
 	gcc popen.c -Wall -Werror -o popen
 	gcc fifo_server.c -Wall -Werror -o fifo_server
 	gcc fifo_client.c -Wall -Werror -o fifo_client
-	gcc mq_view_all.c -Wall -Werror -o mq_view_all
+	gcc sv_mq_view_all.c -Wall -Werror -o sv_mq_view_all
 clean:
-	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info time sys_limits proc_info get_processes file_monitor pipe pipe_filter popen fifo_server fifo_client mq_view_all
+	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info time sys_limits proc_info get_processes file_monitor pipe pipe_filter popen fifo_server fifo_client sv_mq_view_all
