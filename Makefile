@@ -1,22 +1,25 @@
+CC=gcc
+CLAGS=-Wall -Werror
+
 all:
-	gcc cp.c -Wall -Werror -o cp
-	gcc tee.c -Wall -Werror -o tee
-	gcc big_file.c -Wall -Werror -o big_file
-	gcc -D_FILE_OFFSET_BITS=64 big_file_better.c -Wall -Werror -o big_file_better
-	gcc append_seek_0.c -Wall -Werror -o append_seek_0
-	gcc modify_env.c -Wall -Werror -o modify_env
-	gcc show_argv.c -Wall -Werror -o show_argv
-	gcc user_info.c -Wall -Werror -o user_info -lcrypt -g
-	gcc time.c -Wall -Werror -o time
-	gcc sys_limits.c -Wall -Werror -o sys_limits
-	gcc proc_info.c -Wall -Werror -o proc_info
-	gcc get_processes.c -Wall -Werror -o get_processes
-	gcc file_monitor.c -Wall -Werror -o file_monitor
-	gcc pipe.c -Wall -Werror -o pipe
-	gcc pipe_filter.c -Wall -Werror -o pipe_filter
-	gcc popen.c -Wall -Werror -o popen
-	gcc fifo_server.c -Wall -Werror -o fifo_server
-	gcc fifo_client.c -Wall -Werror -o fifo_client
-	gcc sv_mq_view_all.c -Wall -Werror -o sv_mq_view_all
+	$(CC) cp.c $(CLAGS) -o cp
+	$(CC) tee.c $(CLAGS) -o tee
+	$(CC) big_file.c $(CLAGS) -o big_file
+	$(CC) -D_FILE_OFFSET_BITS=64 big_file_better.c $(CLAGS) -o big_file_better
+	$(CC) append_seek_0.c $(CLAGS) -o append_seek_0
+	$(CC) modify_env.c $(CLAGS) -o modify_env
+	$(CC) show_argv.c $(CLAGS) -o show_argv
+	$(CC) user_info.c $(CLAGS) -o user_info -lcrypt -g
+	$(CC) time.c $(CLAGS) -o time
+	$(CC) sys_limits.c $(CLAGS) -o sys_limits
+	$(CC) proc_info.c $(CLAGS) -o proc_info
+	$(CC) get_processes.c $(CLAGS) -o get_processes
+	$(CC) file_monitor.c $(CLAGS) -o file_monitor
+	$(CC) pipe.c $(CLAGS) -o pipe
+	$(CC) pipe_filter.c $(CLAGS) -o pipe_filter
+	$(CC) popen.c $(CLAGS) -o popen
+	$(CC) fifo_server.c $(CLAGS) -o fifo_server
+	$(CC) fifo_client.c $(CLAGS) -o fifo_client
+	$(CC) sv_mq_view_all.c $(CLAGS) -o sv_mq_view_all
 clean:
 	rm cp tee big_file big_file_better append_seek_0 modify_env show_argv user_info time sys_limits proc_info get_processes file_monitor pipe pipe_filter popen fifo_server fifo_client sv_mq_view_all
