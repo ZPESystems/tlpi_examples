@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	int fileCnt;
+	int fileCnt = 0;
 	while (fgets(buf, PATH_MAX, f) != NULL) {
 		printf("%s", buf);
 		fileCnt++;
