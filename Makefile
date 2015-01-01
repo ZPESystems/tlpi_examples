@@ -6,7 +6,8 @@ SRCS=cp tee big_file append_seek_0 modify_env show_argv time sys_limits proc_inf
 	pipe pipe_filter popen \
 	fifo_server fifo_client \
 	sv_mq_view_all \
-	svshm_writer svshm_reader
+	svshm_writer svshm_reader \
+	mmap_cat mmap_replace
 
 SRCS_SPECIAL=big_file_better \
 	user_info
