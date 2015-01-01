@@ -7,7 +7,7 @@ SRCS=cp tee big_file append_seek_0 modify_env show_argv time sys_limits proc_inf
 	fifo_server fifo_client \
 	sv_mq_view_all \
 	svshm_writer svshm_reader \
-	mmap_cat mmap_replace
+	mmap_cat mmap_replace mmap_anon
 
 SRCS_SPECIAL=big_file_better \
 	user_info
@@ -25,3 +25,5 @@ others:
 	
 clean:
 	rm $(SRCS) $(SRCS_SPECIAL)
+
+re: clean all
