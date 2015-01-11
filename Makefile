@@ -9,7 +9,8 @@ SRCS=cp tee big_file append_seek_0 modify_env show_argv time sys_limits proc_inf
 	svshm_writer svshm_reader \
 	mmap_cat mmap_replace mprotect \
 	posix_shm_writer posix_shm_reader \
-	daemon_imp daemon_glibc daemon_sighup
+	daemon_imp daemon_glibc daemon_sighup \
+	fork
 
 SRCS_SPECIAL=big_file_better \
 	user_info
