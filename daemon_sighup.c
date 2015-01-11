@@ -6,7 +6,10 @@
 #include <time.h>
 #include <stdio.h>
 
-static const char* LOG_FILE = "/tmp/ds.log";
+#include <syslog.h>
+#include <string.h>
+#include <errno.h>
+
 static const char* CONFIG_FILE = "/tmp/ds.config";
 
 static volatile sig_atomic_t hupReceived = 0;
@@ -16,22 +19,20 @@ static void sighupHandler(int sig)
 	hupReceived = 1;
 }
 
-void readConfig(FILE *lg)
+void readConfig()
 {
 	FILE *f = fopen(CONFIG_FILE, "r");
 	if (!f) {
-		perror("fopen");
-		fprintf(lg, "CONFIG ERROR\n");
+		syslog(LOG_ERR, "Coudl not open the config file: %s", strerror(errno));
 		_exit(EXIT_FAILURE);
 	}
 
 	char conf[255];
 	fscanf(f, "%s", conf);
-	fprintf(lg, "CONFIG: %s\n", conf);
-	fflush(lg);
+	syslog(LOG_INFO, "CONFIG: %s", conf);
 }
 
-int main()
+int main(int agc, char *argv[])
 {
 	const int SLEEP_TIME = 15;
 	int count = 0; // number of completed sleep calls
@@ -58,38 +59,26 @@ int main()
 		_exit(EXIT_FAILURE);
 	}
 
-	FILE *logf = fopen(LOG_FILE, "w");
-	if (!logf) {
-		perror("fopen");
-		_exit(EXIT_FAILURE);
-	}
+	openlog(argv[0], LOG_PID | LOG_CONS | LOG_NOWAIT, LOG_LOCAL0);
 
 	time_t t = time(NULL);
-	fprintf(logf, "Log open in %s", ctime(&t));
-	fflush(logf);
-	readConfig(logf);
+	syslog(LOG_INFO, "Log open in: %s", ctime(&t));
+	readConfig();
 
 	unsleept = SLEEP_TIME;
 	for (;;) {
 		unsleept = sleep(unsleept); // returns > 0 when receive a signal
 
 		if (hupReceived == 1) {
-			fclose(logf);
-			logf = fopen(LOG_FILE, "w");
-			if (!logf) {
-				perror("fopen");
-				_exit(EXIT_FAILURE);
-			}
-			time_t t = time(NULL);
-			fprintf(logf, "Log open in %s", ctime(&t));
-			readConfig(logf);
+			t = time(NULL);
+			syslog(LOG_INFO, "Log reopen in: %s", ctime(&t));
+			readConfig();
 			hupReceived = 0;
 		}
 
 		if (unsleept == 0) {
 			count++;
-			fprintf(logf, "Main: %d times\n", count);
-			fflush(logf);
+			syslog(LOG_INFO, "Main: %d times", count);
 			unsleept = SLEEP_TIME;
 		}
 	}
