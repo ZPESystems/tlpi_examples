@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
 	if (argc < 3) {
 		printf("Need a name and data as arguments.Aborting\n");
-		_exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 
 	int fd = shm_open(argv[1], flags, perms);

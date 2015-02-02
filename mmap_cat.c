@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
 	if (argc < 2) {
 		fprintf(stderr, "Need one argument. Aborting\n");
-		_exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 
 	char *addr;
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	// read from mmaped file
 	if (write(STDOUT_FILENO, addr, st.st_size) != st.st_size) {
 		printf("write");
-		_exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 
 	if (munmap(addr, st.st_size) == -1)

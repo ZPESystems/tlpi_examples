@@ -39,7 +39,7 @@ int main()
 		if (fcntl(fd, F_SETFL, flags) == -1)
 			exit_failure("fcntl - F_SETFL");
 
-		_exit(EXIT_SUCCESS);
+		exit(EXIT_SUCCESS);
 
 	default: // parent: see file changes made by child
 		if (wait(NULL) == -1)

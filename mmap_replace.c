@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
 	if (argc < 2) {
 		fprintf(stderr, "Must have at least one parameter of a file path. Aborting\n");
-		_exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 
 	if ((fd = open(argv[1], O_RDWR)) == -1)
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	if (argc > 2) {
 		if (strlen(argv[2]) >= MEM_SIZE) {
 			fprintf(stderr, "new value is too large");
-			_exit(EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 
 		memset(addr, 0, MEM_SIZE); // zero out region

@@ -19,7 +19,7 @@ int becameDaemon(int flags)
 	switch (fork()) { // become background process
 	case -1: return -1;
 	case 0: break; 	// child continues
-	default:  _exit(EXIT_SUCCESS);	// parent dies
+	default:  exit(EXIT_SUCCESS);	// parent dies
 	}
 
 	if (setsid() == -1)
@@ -28,7 +28,7 @@ int becameDaemon(int flags)
 	switch (fork()) { // ensure we're not the session leader
 	case -1: return -1;
 	case 0: break;
-	default:  _exit(EXIT_SUCCESS);
+	default:  exit(EXIT_SUCCESS);
 	}
 
 	if (!(flags & BD_NO_UMASK0)) // clear file mode creation mask

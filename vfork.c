@@ -19,7 +19,7 @@ int main()
 
 		write(STDOUT_FILENO, "Child executing\n", 16);
 		istack *= 3; // parent will see the change
-		_exit(EXIT_SUCCESS);
+		exit(EXIT_SUCCESS);
 	default: // parent will be blocked until child exits
 		write(STDOUT_FILENO, "Parent executing\n", 17);
 		printf("istack = %d\n", istack);

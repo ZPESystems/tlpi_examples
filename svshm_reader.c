@@ -31,7 +31,7 @@ int main()
 		bytes += shmp->cnt;
 		if (write(STDOUT_FILENO, shmp->buf, shmp->cnt) != shmp->cnt) {
 			printf("write");
-			_exit(EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 
 		if (setSem(SEM_RELEASE, semid, WRITE_SEM) == -1) // give writer a turn

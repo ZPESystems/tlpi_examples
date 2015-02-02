@@ -26,7 +26,7 @@ void readConfig()
 	FILE *f = fopen(CONFIG_FILE, "r");
 	if (!f) {
 		syslog(LOG_ERR, "Coudl not open the config file: %s", strerror(errno));
-		_exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 
 	char conf[255];

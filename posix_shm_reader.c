@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
 	if (argc < 2) {
 		printf("Need an SHM name. Aborting\n");
-		_exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 
 	// open existent shm object
