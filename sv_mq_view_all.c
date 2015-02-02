@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "error_aux.h"
+
 int main()
 {
 	int maxind, ind, msqid;
@@ -16,10 +18,8 @@ int main()
 
 	// size of kernel entries array
 	maxind = msgctl(0, MSG_INFO, (struct msqid_ds *) &msginfo);
-	if (maxind == -1) {
-		perror("msgctl");
-		_exit(EXIT_FAILURE);
-	}
+	if (maxind == -1)
+		exit_failure("msgctl");
 
 	printf("maxind: %d\n", maxind);
 	printf("index	id	key	messages\n");
@@ -28,7 +28,7 @@ int main()
 		msqid = msgctl(ind, MSG_STAT, &ds);
 		if (msqid == -1) {
 			if (errno != EINVAL && errno != EACCES)
-				perror("msgstat"); // unkown error
+				exit_failure("msgstat"); // unkown error
 			continue; //skip this one
 		}
 		

@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "error_aux.h"
+
 #define BUF_LEN (10 * (sizeof(struct inotify_event) + NAME_MAX + 1))
 
 void display_event(struct inotify_event *e)
@@ -44,18 +46,14 @@ int main(int argc, char *argv[])
 	}
 
 	int ifd = inotify_init();
-	if (ifd == -1) {
-		perror("inotify_init");
-		return EXIT_FAILURE;
-	}
+	if (ifd == -1)
+		exit_failure("inotify_init");
 
 	int i;
 	for (i = 1; i < argc; i++) {
 		int err = inotify_add_watch(ifd, argv[i], IN_ALL_EVENTS);
-		if (err == -1) {
-			perror("inotify_add_watch");
-			return EXIT_FAILURE;
-		}
+		if (err == -1)
+			exit_failure("inotify_add_watch");
 
 		printf("Watching %s file using %d fd\n", argv[i], err);
 	}
@@ -66,10 +64,8 @@ int main(int argc, char *argv[])
 
 	for (;;) {
 		int numRead = read(ifd, buf, BUF_LEN);
-		if (numRead <= 0) {
-			perror("read");
-			return EXIT_FAILURE;
-		}
+		if (numRead <= 0)
+			exit_failure("read");
 
 		printf("Read %ld bytes from inotify fd\n", (long)numRead);
 

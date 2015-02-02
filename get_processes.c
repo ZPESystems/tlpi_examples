@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
+#include "error_aux.h"
+
 uid_t getUid(const char *username)
 {
 	struct passwd *pwd;
@@ -29,10 +31,8 @@ int main(int argc, char *argv[])
 	}
 
 	DIR *dir = opendir("/proc/");
-	if (!dir) {
-		perror("opendir");
-		return EXIT_FAILURE;
-	}
+	if (!dir)
+		exit_failure("opendir");
 
 	struct dirent *ep;
 

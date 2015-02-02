@@ -4,14 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "error_aux.h"
+
 int main()
 {
 	struct utsname uts;
 
-	if (uname(&uts) == -1) {
-		perror("stat");
-		return EXIT_FAILURE;
-	}
+	if (uname(&uts) == -1)
+		exit_failure("stat");
 
 	printf("Node name:   %s\n", uts.nodename);
 	printf("System name: %s\n", uts.sysname);

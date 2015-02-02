@@ -3,36 +3,30 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "error_aux.h"
+
 int main()
 {
 	int fds[2];
 
-	if (pipe(fds) == -1) {
-		perror("pipe");
-		return EXIT_FAILURE;
-	}
+	if (pipe(fds) == -1)
+		exit_failure("pipe");
 
 	switch (fork()) {
 	case -1:
-		perror("fork1");
-		return EXIT_FAILURE;
+		exit_failure("fork1");
+
 	case 0: // first child: exec ls to write to pipe
-		if (close(fds[0]) == -1) {
-			perror("close 1");
-			return EXIT_FAILURE;
-		}
+		if (close(fds[0]) == -1)
+			exit_failure("close 1");
 
 		// Duplicate stdout on write end of pipe and close duplicated descriptor
 		if (fds[1] != STDOUT_FILENO) { // defensive check to verify is the write pipe wasn't reset before
-			if (dup2(fds[1], STDOUT_FILENO) == -1) {
-				perror("dup2 1");
-				return EXIT_FAILURE;
-			}
+			if (dup2(fds[1], STDOUT_FILENO) == -1)
+				exit_failure("dup2 1");
 
-			if (close(fds[1]) == -1) {
-				perror("close 2");
-				return EXIT_FAILURE;
-			}
+			if (close(fds[1]) == -1)
+				exit_failure("close 2");
 		}
 
 		execlp("ls", "ls", (char *)NULL); // this will write the output of ls command into the write end of pipe
@@ -43,25 +37,19 @@ int main()
 
 	switch (fork()) {
 	case -1:
-		perror("fork2");
-		return EXIT_FAILURE;
+		exit_failure("fork2");
+
 	case 0: // second child: exec wc to read from pipe
-		if (close(fds[1]) == -1) { // close write pipe
-			perror("close 3");
-			return EXIT_FAILURE;
-		}
+		if (close(fds[1]) == -1) // close write pipe
+			exit_failure("close 3");
 
 		// Duplicate stdin on read end of pipe and close duplicated descriptor
 		if (fds[0] != STDIN_FILENO) { // defensive check to verify is the read pipe wasn't reset before
-			if (dup2(fds[0], STDIN_FILENO) == -1) {
-				perror("dup2 2");
-				return EXIT_FAILURE;
-			}
+			if (dup2(fds[0], STDIN_FILENO) == -1)
+				exit_failure("dup2 2");
 
-			if (close(fds[0]) == -1) {
-				perror("close 4");
-				return EXIT_FAILURE;
-			}
+			if (close(fds[0]) == -1)
+				exit_failure("close 4");
 		}
 
 		execlp("wc", "wc", "-l", (char *)NULL); // read the pipe, full 
@@ -71,24 +59,17 @@ int main()
 	}
 
 	// parent closes all unused fds for pipe and waits for children
-	if (close(fds[0]) == -1) {
-		perror("close 5");
-		return EXIT_FAILURE;
-	}
-	if (close(fds[1]) == -1) {
-		perror("close 6");
-		return EXIT_FAILURE;
-	}
+	if (close(fds[0]) == -1)
+		exit_failure("close 5");
 
-	if (wait(NULL) == -1) {
-		perror("wait 1");
-		return EXIT_FAILURE;
-	}
+	if (close(fds[1]) == -1)
+		exit_failure("close 6");
 
-	if (wait(NULL) == -1) {
-		perror("wait 2");
-		return EXIT_FAILURE;
-	}
+	if (wait(NULL) == -1)
+		exit_failure("wait 1");
+
+	if (wait(NULL) == -1)
+		exit_failure("wait 2");
 
 	return EXIT_SUCCESS;
 }

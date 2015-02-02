@@ -2,16 +2,16 @@
 #include <limits.h>
 #include <stdlib.h>
 
+#include "error_aux.h"
+
 int main(int argc, char *argv[])
 {
 	FILE *f;
 	char buf[PATH_MAX];
 
 	f = popen("/bin/ls * 2> /dev/null", "r");
-	if (!f) {
-		perror("perror");
-		return EXIT_FAILURE;
-	}
+	if (!f)
+		exit_failure("p open");
 
 	int fileCnt = 0;
 	while (fgets(buf, PATH_MAX, f) != NULL) {

@@ -9,6 +9,8 @@
 // max number of bytes writen to the file
 #define MEM_SIZE 10
 
+#include "error_aux.h"
+
 int main(int argc, char *argv[])
 {
 	char *addr;
@@ -19,21 +21,15 @@ int main(int argc, char *argv[])
 		_exit(EXIT_FAILURE);
 	}
 
-	if ((fd = open(argv[1], O_RDWR)) == -1) {
-		perror("open");
-		_exit(EXIT_FAILURE);
-	}
+	if ((fd = open(argv[1], O_RDWR)) == -1)
+		exit_failure("open");
 
-	if ((addr = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED) {
-		perror("mmap");
-		_exit(EXIT_FAILURE);
-	}
+	if ((addr = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED)
+		exit_failure("mmap");
 
 	// we dont need the fd anymore
-	if (close(fd) == -1) {
-		perror("mmap");
-		_exit(EXIT_FAILURE);
-	}
+	if (close(fd) == -1)
+		exit_failure("mmap");
 
 	// secure practice: output at most MEM_SIZE bytes
 	printf("Current content of file=%.*s\n", MEM_SIZE, addr);
@@ -46,18 +42,14 @@ int main(int argc, char *argv[])
 
 		memset(addr, 0, MEM_SIZE); // zero out region
 		strncpy(addr, argv[2], MEM_SIZE - 1);
-		if (msync(addr, MEM_SIZE, MS_SYNC) == -1) {
-			perror("msync");
-			_exit(EXIT_FAILURE);
-		}
+		if (msync(addr, MEM_SIZE, MS_SYNC) == -1)
+			exit_failure("msync");
 
 		printf("Copied \"%s\" to shared memory\n", argv[2]);
 	}
 
-	if (munmap(addr, MEM_SIZE) == -1) {
-		perror("munmap");
-		_exit(EXIT_FAILURE);
-	}
+	if (munmap(addr, MEM_SIZE) == -1)
+		exit_failure("munmap");
 
 	return EXIT_SUCCESS;
 }

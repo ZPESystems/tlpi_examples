@@ -6,34 +6,30 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "error_aux.h"
+
 char *map_with_devzero()
 {
 	int fd;
-	if ((fd = open("/dev/zero", O_RDWR)) == -1) {
-		perror("open");
-		_exit(EXIT_FAILURE);
-	}
+	if ((fd = open("/dev/zero", O_RDWR)) == -1)
+		exit_failure("open");
 
 	char *addr = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-	if (addr == MAP_FAILED) {
-		perror("mmap devzero");
-		_exit(EXIT_FAILURE);
-	}
+	if (addr == MAP_FAILED)
+		exit_failure("mmap devzero");
 
-	if (close(fd) == -1) {
-		perror("close");
-		_exit(EXIT_FAILURE);
-	}
+	if (close(fd) == -1)
+		exit_failure("close");
+
 	return addr;
 }
 
 char *map_anon()
 {
 	char *addr = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -1, 0);
-	if (addr == MAP_FAILED) {
-		perror("mmap anon");
-		_exit(EXIT_FAILURE);
-	}
+	if (addr == MAP_FAILED)
+		exit_failure("mmap anon");
+
 	return addr;
 }
 
@@ -43,30 +39,24 @@ void fork_call(char *addr)
 
 	switch(fork()) {
 	case -1:
-		perror("fork");
-		_exit(EXIT_FAILURE);
-		break;
+		exit_failure("fork");
+
 	case 0: // child increment the shared integer and exit
 		printf("Child started, value = %d\n", *addr);
 		(*addr)++;
 
-		if (munmap(addr, sizeof(int)) == -1) {
-			perror("munmap");
-			_exit(EXIT_FAILURE);
-		}
+		if (munmap(addr, sizeof(int)) == -1)
+			exit_failure("munmap");
+
 		exit(EXIT_SUCCESS);
 	default:
-		if (wait(NULL) == -1) {
-			perror("wait");
-			_exit(EXIT_FAILURE);
-		}
+		if (wait(NULL) == -1)
+			exit_failure("wait");
 
 		printf("In parent, value = %d\n", *addr);
 
-		if (munmap(addr, sizeof(int)) == -1) {
-			perror("munmap");
-			_exit(EXIT_FAILURE);
-		}
+		if (munmap(addr, sizeof(int)) == -1)
+			exit_failure("munmap");
 	}
 }
 

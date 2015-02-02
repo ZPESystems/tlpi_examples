@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include "error_aux.h"
+
 int main(int argc, char *argv[])
 {
 	if (argc < 2) {
@@ -17,34 +19,26 @@ int main(int argc, char *argv[])
 	int fd;
 	struct stat st;
 
-	if ((fd = open(argv[1], O_RDONLY)) == -1) {
-		perror("open");
-		_exit(EXIT_FAILURE);
-	}
+	if ((fd = open(argv[1], O_RDONLY)) == -1)
+		exit_failure("open");
 
 	// get size of file to use as size of mapping
-	if (fstat(fd, &st) == -1) {
-		perror("fstat");
-		_exit(EXIT_FAILURE);
-	}
+	if (fstat(fd, &st) == -1)
+		exit_failure("fstat");
 
 	// the last parameter is the file offset. Zero here means to map the entire file
 	// into memory
-	if ((addr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED) {
-		perror("mmap");
-		_exit(EXIT_FAILURE);
-	}
+	if ((addr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
+		exit_failure("mmap");
 
 	// read from mmaped file
 	if (write(STDOUT_FILENO, addr, st.st_size) != st.st_size) {
-		perror("write");
+		printf("write");
 		_exit(EXIT_FAILURE);
 	}
 
-	if (munmap(addr, st.st_size) == -1) {
-		perror("munmap");
-		_exit(EXIT_FAILURE);
-	}
+	if (munmap(addr, st.st_size) == -1)
+		exit_failure("munmap");
 
 	return EXIT_SUCCESS;
 }

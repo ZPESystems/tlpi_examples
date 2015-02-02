@@ -2,14 +2,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "error_aux.h"
+
 int main()
 {
 	int istack = 222;
 
 	switch (vfork()) {
 	case -1:
-		perror("vfork");
-		_exit(EXIT_FAILURE);
+		exit_failure("vfork");
 	case 0: // child executes first in parent's memory space
 		setbuf(stdout, NULL);
 		printf("Child executing and will sleep for 3 seconds, and the "

@@ -6,6 +6,8 @@
 
 #define BUF_SIZE 1024
 
+#include "error_aux.h"
+
 int main(int argc, char *argv[])
 {
 	int fd;
@@ -28,30 +30,26 @@ int main(int argc, char *argv[])
 	}
 
 	fd = open(filepath, mode, S_IRUSR | S_IWUSR);
-	if (fd == -1) {
-		perror("open");
-		exit(EXIT_FAILURE);
-	}
+	if (fd == -1)
+		exit_failure("open");
 
 	char c[BUF_SIZE];
 	len = sizeof(c);
 	while ((nread = read(STDIN_FILENO, c, len)) > 0) {
 		printf("%s", c);
 		if (write(fd, c, nread) != nread) {
-			perror("write less than len");
+			exit_failure("write less than len");
 			exit(EXIT_FAILURE);
 		}
 	}
 
 	if (nread == -1) {
-		perror("read");
+		exit_failure("read");
 		exit(EXIT_FAILURE);
 	}
 
-	if (close(fd) == -1) {
-		perror("close");
-		exit(EXIT_FAILURE);
-	}
+	if (close(fd) == -1)
+		exit_failure("close");
 
 	exit(EXIT_SUCCESS);
 }

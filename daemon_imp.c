@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include "error_aux.h"
+
 #define BD_NO_CHDIR		01 // dont chdir /
 #define BD_NO_CLOSE_FILES 	02 // doest close all open files
 #define BD_NO_REOPEN_STD_FDS 	04 // doesnt map stdin, stdout and stderr to /dev/null
@@ -20,10 +22,8 @@ int becameDaemon(int flags)
 	default:  _exit(EXIT_SUCCESS);	// parent dies
 	}
 
-	if (setsid() == -1) {
-		perror("setsid");
-		_exit(EXIT_FAILURE);
-	}
+	if (setsid() == -1)
+		exit_failure("setsid");
 
 	switch (fork()) { // ensure we're not the session leader
 	case -1: return -1;

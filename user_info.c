@@ -11,6 +11,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "error_aux.h"
+
 void validate_user(struct passwd *pwd, struct spwd *s)
 {
 	char *passwd, *encrypted;
@@ -27,10 +29,8 @@ void validate_user(struct passwd *pwd, struct spwd *s)
 	// erase cleartext password
 	bzero(&passwd, sizeof(passwd));
 
-	if (!encrypted) {
-		perror("crypt");
-		return;
-	}
+	if (!encrypted)
+		exit_failure("crypt");
 
 	if (strcmp(encrypted, pwd->pw_passwd)) {
 		printf("Wrong password...\n");
@@ -97,10 +97,8 @@ int main()
 		printf("\tGroup member: %s\n", *nam);
 
 	grp = getgrgid(grp->gr_gid);
-	if (!grp) {
-		printf("Group not foundby gid! Aborting\n");
-		return EXIT_FAILURE;
-	}
+	if (!grp)
+		exit_failure("Group not foundby gid! Aborting\n");
 
 	printf("Group encontered by id %d\n", grp->gr_gid);
 
@@ -113,16 +111,15 @@ int main()
 	struct spwd *s;
 	s = getspnam("marcos");
 
-	if (s) {
-		printf("Shadow data:\n");
-		printf("\tUsername: %s\n", s->sp_namp);
-		printf("\tEncrypted passwd: %s\n", s->sp_pwdp);
-		printf("\tLast passwd changed: %ld\n", s->sp_lstchg);
+	if (!s)
+		exit_failure("getspnam");
 
-		validate_user(pwd, s);
-	} else {
-		perror("getspnam");
-	}
+	printf("Shadow data:\n");
+	printf("\tUsername: %s\n", s->sp_namp);
+	printf("\tEncrypted passwd: %s\n", s->sp_pwdp);
+	printf("\tLast passwd changed: %ld\n", s->sp_lstchg);
+
+	validate_user(pwd, s);
 
 	return EXIT_SUCCESS;
 }

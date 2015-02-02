@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "error_aux.h"
 #include "fifo.h"
 
 static char clientFifo[CLIENT_FIFO_NAME_LEN];
@@ -26,21 +27,15 @@ int main(int argc, char *argv[])
 
 	umask(0);
 	snprintf(clientFifo, CLIENT_FIFO_NAME_LEN, CLIENT_FIFO_TEMPLATE, (long) getpid());
-	if (mkfifo(clientFifo, S_IRUSR | S_IWUSR | S_IWGRP) == -1) {
-		perror("mkfifo");
-		return EXIT_FAILURE;
-	}
+	if (mkfifo(clientFifo, S_IRUSR | S_IWUSR | S_IWGRP) == -1)
+		exit_failure("mkfifo");
 
-	if (atexit(removeFifo) == -1) {
-		perror("atexit");
-		return EXIT_FAILURE;
-	}
+	if (atexit(removeFifo) == -1)
+		exit_failure("atexit");
 
 	sfd = open(SERVER_FIFO, O_WRONLY);
-	if (sfd == -1) {
-		perror("open 1");
-		return EXIT_FAILURE;
-	}
+	if (sfd == -1)
+		exit_failure("open 1");
 
 	if (write(sfd, &req, sizeof(struct request)) != sizeof(struct request)) {
 		printf("write was not successful\n");
@@ -49,10 +44,8 @@ int main(int argc, char *argv[])
 
 	// open fifo, read and display data
 	cfd = open(clientFifo, O_RDONLY);
-	if (cfd == -1) {
-		perror("open 2");
-		return EXIT_FAILURE;
-	}
+	if (cfd == -1)
+		exit_failure("open 2");
 
 	if (read(cfd, &resp, sizeof(struct response)) != sizeof(struct response)) {
 		printf("read error\n");

@@ -10,6 +10,8 @@
 #include <string.h>
 #include <errno.h>
 
+#include "error_aux.h"
+
 static const char* CONFIG_FILE = "/tmp/ds.config";
 
 static volatile sig_atomic_t hupReceived = 0;
@@ -42,22 +44,16 @@ int main(int agc, char *argv[])
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sa.sa_handler = sighupHandler;
-	if (sigaction(SIGHUP, &sa, NULL) == -1) {
-		perror("sigaction");
-		_exit(EXIT_FAILURE);
-	}
+	if (sigaction(SIGHUP, &sa, NULL) == -1)
+		exit_failure("sigaction");
 
 	struct stat sb;
 
-	if (stat(CONFIG_FILE, &sb) == -1) {
-		perror(CONFIG_FILE);
-		_exit(EXIT_FAILURE);
-	}
+	if (stat(CONFIG_FILE, &sb) == -1)
+		exit_failure(CONFIG_FILE);
 
-	if (daemon(0, 0) == -1) {
-		perror("daemon");
-		_exit(EXIT_FAILURE);
-	}
+	if (daemon(0, 0) == -1)
+		exit_failure("daemon");
 
 	openlog(argv[0], LOG_PID | LOG_CONS | LOG_NOWAIT, LOG_LOCAL0);
 

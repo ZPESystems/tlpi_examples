@@ -7,6 +7,8 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 
+#include "error_aux.h"
+
 int main(int argc, char *argv[])
 {
 	int flags = O_RDWR | O_CREAT | O_EXCL;
@@ -20,27 +22,19 @@ int main(int argc, char *argv[])
 	}
 
 	int fd = shm_open(argv[1], flags, perms);
-	if (fd == -1) {
-		perror("shm_open");
-		_exit(EXIT_FAILURE);
-	}
+	if (fd == -1)
+		exit_failure("shm_open");
 
 	len = strlen(argv[2]);
-	if (ftruncate(fd, len) == -1) {
-		perror("ftruncate");
-		_exit(EXIT_FAILURE);
-	}
+	if (ftruncate(fd, len) == -1)
+		exit_failure("ftruncate");
 
-	if ((addr = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED) {
-		perror("mmap");
-		_exit(EXIT_FAILURE);
-	}
+	if ((addr = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED)
+		exit_failure("mmap");
 
 	// fd not longer needed
-	if (close(fd) == -1) {
-		perror("close");
-		_exit(EXIT_FAILURE);
-	}
+	if (close(fd) == -1)
+		exit_failure("close");
 
 	printf("Copying %ld bytes\n", (long)len);
 	memcpy(addr, argv[2], len); // copying to shared memory

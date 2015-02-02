@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "error_aux.h"
+
 static int idata = 111; // allocated in data segment
 
 int main(int argc, char *argv[])
@@ -11,8 +13,7 @@ int main(int argc, char *argv[])
 
 	switch(childpid = fork()) {
 	case -1:
-		perror("fork");
-		exit(EXIT_FAILURE);
+		exit_failure("fork");
 	case 0:
 		idata *= 3;
 		istack *= 3;
