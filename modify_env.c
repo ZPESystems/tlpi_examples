@@ -12,7 +12,11 @@ int main(int argc, char *argv[])
 	int j;
 	char **ep;
 
+#ifdef __linux__
 	clearenv();
+#else
+	environ = NULL;
+#endif
 
 	for (j = 1; j < argc; j++) {
 		if (putenv(argv[j]) != 0)
