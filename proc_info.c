@@ -18,7 +18,7 @@ int main()
 	printf("Release:     %s\n", uts.release);
 	printf("Version:     %s\n", uts.version);
 	printf("Machine:     %s\n", uts.machine);
-#ifdef _GNU_SOURCE
+#if defined(_GNU_SOURCE) && defined(__linux__)
 	printf("Domain name: %s\n", uts.domainname);
 #endif
 
