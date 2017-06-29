@@ -1,5 +1,5 @@
 CC=gcc
-CLAGS=-Wall -Werror -g
+CLAGS=-Wall -Werror -g -lrt
 
 SRCS=cp tee append_seek_0 modify_env show_argv time sys_limits proc_info \
 	get_processes \
