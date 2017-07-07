@@ -1,4 +1,5 @@
 obj-m += course_module.o
+obj-m += kernel_probes.o
 SRC=/lib/modules/$(shell uname -r)/build
 
 all:
