@@ -1,5 +1,5 @@
 CC=gcc
-CLAGS=-Wall -Werror -g -lrt
+CLAGS=-Wall -Werror -g -lrt -pthread
 
 SRCS=cp tee append_seek_0 modify_env show_argv time sys_limits proc_info \
 	get_processes \
@@ -9,6 +9,7 @@ SRCS=cp tee append_seek_0 modify_env show_argv time sys_limits proc_info \
 	posix_shm_writer posix_shm_reader \
 	daemon_imp \
 	fork fork_file_sharing vfork \
+	pthreads \
 
 ifneq ($(shell uname -s),Darwin)
 SRCS+=big_file file_monitor \
@@ -34,7 +35,7 @@ ifneq ($(shell uname -s),Darwin)
 else
 	$(info MacOS: Some files will not be compiled because they are not compatbile)
 endif
-	
+
 clean:
 	rm -rf $(SRCS) $(SRCS_SPECIAL)
 
