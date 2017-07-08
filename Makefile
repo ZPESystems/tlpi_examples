@@ -9,7 +9,7 @@ SRCS=cp tee append_seek_0 modify_env show_argv time sys_limits proc_info \
 	posix_shm_writer posix_shm_reader \
 	daemon_imp \
 	fork fork_file_sharing vfork \
-	pthreads \
+	pthreads pthreads_lock\
 
 ifneq ($(shell uname -s),Darwin)
 SRCS+=big_file file_monitor \
